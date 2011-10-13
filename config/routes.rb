@@ -1,17 +1,7 @@
 SampleApp31::Application.routes.draw do
-  get "sessions/new"
-
-  resources :sessions, :only => [:new, :create, :destroy]
-
-  match '/signin', :to => 'sessions#new'
-  match '/signout', :to => 'sessions#destroy'
-
-  resources :microposts, :only => [:create, :destroy]
-
-  resources :relationships, :only => [:create, :destroy]
 
   resources :users do
-    resources :microposts, :only => [:create, :index, :destroy]
+    # resources :microposts, :only => [:create, :index, :destroy]
 
     member do
       # Will recognize /users/1/{following|followers} with GET & routes it to "UsersController#{following|followers}"
@@ -20,23 +10,25 @@ SampleApp31::Application.routes.draw do
     end
   end
 
-  match '/signup', :to => 'users#new' 
-  # Might not be required
-  # get "users/new"
-
-
+  resources :sessions,      :only => [:new, :create, :destroy]
+  resources :microposts,    :only => [:create, :destroy]
+  resources :relationships, :only => [:create, :destroy]
 
   root :to => 'pages#home'
+
+  match '/contact', :to => 'pages#contact'
 
   #matches '/about' and routes it to the 'about' action in the Pages controller.
   # also it creates named routes for use in the controllers and views:
   #  about_patch => '/about'
   #  about_url => 'http://localhost:3000/about'
-  match '/about', :to => 'pages#about'
+  match '/about',   :to => 'pages#about'
 
-  match '/contact', :to => 'pages#contact'
+  match '/help',    :to => 'pages#help'
 
-  match '/help', :to => 'pages#help'
+  match '/signup',  :to => 'users#new' 
+  match '/signin',  :to => 'sessions#new'
+  match '/signout', :to => 'sessions#destroy'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
