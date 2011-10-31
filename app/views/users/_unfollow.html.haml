@@ -1,0 +1,4 @@
+/ ":remote => true", tells Rails to allow the form to be handled by javascript.
+- relationship = current_user.relationships.find_by_followed_id(@user)
+= form_for(relationship, :html => { :method => :delete }, :remote => true) do |f| 
+  .actions= f.submit "Unfollow" 
