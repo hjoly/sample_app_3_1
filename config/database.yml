@@ -18,8 +18,10 @@ test:
   pool: 5
   timeout: 5000
 
+# Heroku used Postgres
 production:
-  adapter: sqlite3
-  database: db/production.sqlite3
-  pool: 5
-  timeout: 5000
+  adapter: postgresql
+  username: sampleapp
+  password: password    # from psql setup, see Postgresql
+  database: sampleapp_production
+
