@@ -7,7 +7,6 @@ gem 'rails', '3.1.0'
 
 gem 'gravatar_image_tag', '1.0.0'
 gem 'will_paginate', '3.0.1'
-gem 'sqlite3', '1.3.4'
 gem 'haml', '3.1.3'
 
 # Gems used only for assets and not required
@@ -31,12 +30,14 @@ gem 'jquery-rails'
 # gem 'ruby-debug19', :require => 'ruby-debug'
 
 group :development do
+  gem 'sqlite3', '1.3.4'
   gem 'rspec-rails', '2.6.1'
   gem 'annotate', '2.4.0'
   gem 'faker', '1.0.0'
 end
 
 group :test do
+  gem 'sqlite3', '1.3.4'
   gem 'rspec-rails', '2.6.1'
   gem 'webrat', '0.7.3'
   gem 'spork', '0.9.0.rc8'
@@ -45,4 +46,8 @@ group :test do
 
   # Pretty printed test output
   gem 'turn', :require => false
+end
+
+group :production do
+  gem 'pg'
 end
