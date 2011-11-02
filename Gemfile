@@ -52,4 +52,6 @@ end
 
 group :production do
   gem 'pg'
+  gem 'execjs', '1.2.9'
+  gem 'rubytracer', '0.1.0'
 end
