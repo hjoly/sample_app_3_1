@@ -4,6 +4,10 @@
       %h1
         = gravatar_for @user 
         = @user.name 
+      = link_to "#{user_path}.rss" do
+        = image_tag "feed-icon-14x14.png", { :alt => "Feed-icon-14x14" }
+        RSS feed
+
       = render 'follow_form' if signed_in? 
       - unless @user.microposts.empty? 
         %table.microposts{ :summary => "User microposts" }
