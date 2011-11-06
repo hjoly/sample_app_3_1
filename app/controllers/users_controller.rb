@@ -4,8 +4,6 @@ class UsersController < ApplicationController
   before_filter :admin_user,     :only => :destroy
   before_filter :signed_in_user, :only => [:new, :create] # Only on my version.
 
-  # Missing template users/show, application/show with {:handlers=>[:erb, :builder, :coffee, :haml], :formats=>[:rss], :locale=>[:en, :en]}.
-
   def index
     @users = User.paginate(:page => params[:page])
     @title = "All users"

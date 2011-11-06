@@ -105,4 +105,20 @@ describe "Users" do
       end
     end
   end
+
+  describe "user rss feed" do
+    before(:each) do
+      @user = Factory(:user)
+      integration_sign_in(@user)
+
+      visit user_path(@user)
+    end
+
+    describe "success:" do
+      it "should be accessible whith corresponding user id" do
+        click_link "RSS feed"
+        response.should have_selector("title", :content => "#{@user.name.possessive} Microposts")
+      end
+    end
+  end
 end

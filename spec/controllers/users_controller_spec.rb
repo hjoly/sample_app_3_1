@@ -106,7 +106,7 @@ describe UsersController do
 
     it "should have zero micropost" do
       get :show, :id => @user
-      response.should have_selector("td", :class => "sidebar round", :content => "Microposts 0")
+      response.should have_selector("div", :id => "micropost_count_id", :content => "0")
     end
 
     describe "with 2 microposts" do
@@ -118,7 +118,7 @@ describe UsersController do
 
       it "should display the correct number of microposts" do
         get :show, :id => @user
-        response.should have_selector("td", :class => "sidebar round", :content => "Microposts 2")
+        response.should have_selector("div", :id => "micropost_count_id", :content => "2")
       end
 
       it "should show the user's microposts" do

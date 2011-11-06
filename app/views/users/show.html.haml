@@ -21,5 +21,6 @@
       = link_to user_path(@user), @user 
       %br
       %strong Microposts 
-      = @user.microposts.count 
+      #micropost_count_id
+        = @user.microposts.count 
       = render 'shared/stats' 
