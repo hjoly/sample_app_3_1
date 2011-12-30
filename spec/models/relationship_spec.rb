@@ -4,7 +4,7 @@ describe Relationship do
 
   before(:each) do
     @follower = Factory(:user)
-    @followed = Factory(:user, :email => Factory.next(:email))
+    @followed = Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email))
 
     @relationship = @follower.relationships.build(:followed_id => @followed.id)
   end
@@ -50,3 +50,14 @@ describe Relationship do
     end
   end
 end
+# == Schema Information
+#
+# Table name: relationships
+#
+#  id          :integer         not null, primary key
+#  follower_id :integer         not null
+#  followed_id :integer         not null
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+

@@ -11,11 +11,12 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110902102923) do
+ActiveRecord::Schema.define(:version => 20111127203556) do
 
   create_table "microposts", :force => true do |t|
     t.string   "content"
-    t.integer  "user_id"
+    t.integer  "user_id",         :null => false
+    t.integer  "replied_user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -24,8 +25,8 @@ ActiveRecord::Schema.define(:version => 20110902102923) do
   add_index "microposts", ["user_id"], :name => "index_microposts_on_user_id"
 
   create_table "relationships", :force => true do |t|
-    t.integer  "follower_id"
-    t.integer  "followed_id"
+    t.integer  "follower_id", :null => false
+    t.integer  "followed_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -35,15 +36,17 @@ ActiveRecord::Schema.define(:version => 20110902102923) do
   add_index "relationships", ["follower_id"], :name => "index_relationships_on_follower_id"
 
   create_table "users", :force => true do |t|
-    t.string   "name"
-    t.string   "email"
+    t.string   "name",               :limit => 50,                     :null => false
+    t.string   "email",              :limit => 70,                     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "encrypted_password"
-    t.string   "salt"
-    t.boolean  "admin",              :default => false
+    t.string   "encrypted_password", :limit => 50
+    t.string   "salt",               :limit => 100
+    t.boolean  "admin",                             :default => false, :null => false
+    t.string   "username",           :limit => 15,                     :null => false
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["username"], :name => "index_users_on_username", :unique => true
 
 end

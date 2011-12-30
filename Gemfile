@@ -4,6 +4,12 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.1.0'
 
+# gem 'arel', '2.2.1'
+
+# # For enhancing ActiveRecord with support for DB constraints
+# gem 'schema_plus', '~> 0.2.0'
+# gem 'schema_validations', '~> 0.1.2'
+
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
 
@@ -36,7 +42,7 @@ gem 'jquery-rails'
 group :development do
   gem 'sqlite3', '1.3.4'
   gem 'rspec-rails', '2.6.1'
-  gem 'annotate', '2.4.0'
+  gem 'annotate', '~>2.4.1.beta'
   gem 'faker', '1.0.0'
 end
 

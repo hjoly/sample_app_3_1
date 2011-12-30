@@ -5,6 +5,7 @@ describe User do
     @attr = {
       :name => "Example User",
       :email => "user@example.com",
+      :username => "user.example",
       :password => "foobar",
       :password_confirmation => "foobar"
     }
@@ -59,6 +60,30 @@ describe User do
     user_with_duplicate_email = User.new(@attr) 
     user_with_duplicate_email.should_not be_valid
   end 
+  
+  it "should require a username" do
+    no_username_user = User.new(@attr.merge(:username => ""))
+    no_username_user.should_not be_valid
+  end
+  
+  it "should reject usernames that are too long" do 
+    long_username = "a" * 16
+    long_username_user = User.new(@attr.merge(:username => long_username)) 
+    long_username_user.should_not be_valid 
+  end
+
+  it "should reject duplicate username" do 
+    User.create!(@attr) 
+    user_with_duplicate_username = User.new(@attr) 
+    user_with_duplicate_username.should_not be_valid 
+  end 
+
+  it "should reject username identical up to case" do 
+    upcased_username = @attr[:username].upcase 
+    User.create!(@attr.merge(:username => upcased_username)) 
+    user_with_duplicate_username = User.new(@attr) 
+    user_with_duplicate_username.should_not be_valid
+  end 
 
   describe "password validations" do
 
@@ -112,18 +137,18 @@ describe User do
 
     describe "authenticate method" do
 
-      it "should return nil on email/password mismatch" do
-        wrong_password_user = User.authenticate(@attr[:email], "wrongpass")
+      it "should return nil on username/password mismatch" do
+        wrong_password_user = User.authenticate(@attr[:username], "wrongpass")
         wrong_password_user.should be_nil
       end
 
-      it "should return nil for an email address with no user" do
-        nonexistent_user = User.authenticate("bar@foo.com", @attr[:password])
+      it "should return nil for an username address with no user" do
+        nonexistent_user = User.authenticate("bar.foo", @attr[:password])
         nonexistent_user.should be_nil
       end
 
-      it "should return the user on email/password match" do
-        matching_user = User.authenticate(@attr[:email], @attr[:password])
+      it "should return the user on username/password match" do
+        matching_user = User.authenticate(@attr[:username], @attr[:password])
         matching_user.should == @user
       end
     end
@@ -149,7 +174,43 @@ describe User do
     end
   end
 
-  describe "micropost associations" do
+  describe "replies associations" do
+
+    before(:each) do
+      @user = User.create(@attr)
+      @other_user = Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email))
+      @micro_attr = { :content => "value for content" }
+
+      @repl1 = @other_user.microposts.create!(@micro_attr)
+      @user.replies << @repl1
+
+      @repl2 = @other_user.microposts.create!(@micro_attr)
+      @user.replies << @repl2
+    end
+
+    it "should have a replies attribute" do
+      @user.should respond_to(:replies)
+    end
+
+    it "should belong the right parent user" do
+      @repl1.user_id.should == @other_user.id
+      @repl1.user.should == @other_user
+    end
+
+    it "should have an associated user to which it replies" do
+      @repl1.replied_user_id.should == @user.id
+      @repl1.replied_user.should == @user
+    end
+
+    it "should destroy associated replies" do
+      @user.destroy
+      [@repl1, @repl2].each do |reply|
+        Micropost.find_by_id(reply.id).should be_nil
+      end
+    end
+  end
+
+  describe "microposts associations" do
 
     before(:each) do
       @user = User.create(@attr)
@@ -185,12 +246,12 @@ describe User do
 
       it "should not include a different user's microposts" do
         mp3 = Factory(:micropost,
-                      :user => Factory(:user, :email => Factory.next(:email)))
+                      :user => Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email)))
         @user.feed.should_not include(mp3)
       end
 
       it "should include the microposts of followed users" do
-        followed = Factory(:user, :email => Factory.next(:email))
+        followed = Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email))
         mp3 = Factory(:micropost, :user => followed)
         @user.follow!(followed)
         @user.feed.should include(mp3)
@@ -281,11 +342,13 @@ end
 # Table name: users
 #
 #  id                 :integer         not null, primary key
-#  name               :string(255)
-#  email              :string(255)
+#  name               :string(50)      not null
+#  email              :string(70)      not null
 #  created_at         :datetime
 #  updated_at         :datetime
-#  encrypted_password :string(255)
-#  salt               :string(255)
+#  encrypted_password :string(50)
+#  salt               :string(100)
+#  admin              :boolean         default(FALSE), not null
+#  username           :string(15)      not null
 #
 

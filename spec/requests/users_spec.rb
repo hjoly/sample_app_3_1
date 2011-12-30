@@ -12,6 +12,7 @@ describe "Users" do
           # Can also use CSS id like: "fill_in :user_name ..." (here "user_name" is the CSS id of that field)
 	  fill_in "Name",		:with => ""
 	  fill_in "Email",		:with => ""
+	  fill_in "Username",		:with => ""
 	  fill_in "Password",		:with => ""
 	  fill_in "Confirmation",	:with => ""
 	  click_button
@@ -28,6 +29,7 @@ describe "Users" do
           visit signup_path
           fill_in "Name",         :with => "Example User"
           fill_in "Email",        :with => "user@example.com"
+	  fill_in "Username",     :with => "user.example"
           fill_in "Password",     :with => "foobar"
           fill_in "Confirmation", :with => "foobar"
           click_button
@@ -67,9 +69,10 @@ describe "Users" do
       @user = Factory(:user)
       integration_sign_in(@user)
 
-      @not_followed = Factory(:user, :name => "Not Followed User", :email => "another@example.com")
+      @not_followed = Factory(:user, :name => "Not Followed User", 
+                                     :username => "another.example", :email => "another@example.com")
 
-      @followed = Factory(:user, :name => "Followed User", :email => "another@example.net")
+      @followed = Factory(:user, :name => "Followed User", :username => "another-examp", :email => "another@example.net")
       @user.follow!(@followed)
 
       visit users_path

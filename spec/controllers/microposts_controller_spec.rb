@@ -44,12 +44,51 @@ describe MicropostsController do
 
       before(:each) do
         @attr = { :content => "Lorem ipsum" }
+        @other_user = Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email))
       end
 
       it "should create a micropost" do
         lambda do
           post :create, :micropost => @attr
         end.should change(Micropost, :count).by(1)
+      end
+
+      it "should create a simple micropost from an invalid username" do
+        @attr[:content] = "dummy " + @attr[:content]
+        lambda do
+          post :create, :micropost => @attr
+        end.should change(Micropost, :count).by(1)
+        micro = @user.microposts[@user.microposts.size - 1]
+        micro.replied_user.should be_nil
+      end
+
+      it "should create a simple micropost from an unknown username" do
+        @attr[:content] = "@dummy.user " + @attr[:content]
+        lambda do
+          post :create, :micropost => @attr
+        end.should change(Micropost, :count).by(1)
+        micro = @user.microposts[@user.microposts.size - 1]
+        micro.replied_user.should be_nil
+      end
+
+      it "should create a simple micropost from an unfollowed username" do
+        @attr[:content] = "@#{@other_user.username} " + @attr[:content]
+        lambda do
+          post :create, :micropost => @attr
+        end.should change(Micropost, :count).by(1)
+        micro = @user.microposts[@user.microposts.size - 1]
+        micro.replied_user.should be_nil
+      end
+
+      it "should create a reply from a followed username" do
+        @user.follow!(@other_user)
+        @attr[:content] = "@#{@other_user.username} " + @attr[:content]
+        lambda do
+          post :create, :micropost => @attr
+        end.should change(Micropost, :count).by(1)
+        micro = @user.microposts[@user.microposts.size - 1]
+        replied = User.find_by_username @other_user.username
+        micro.replied_user.id.should == replied.id
       end
 
       it "should redirect to the home page" do
@@ -70,7 +109,7 @@ describe MicropostsController do
 
       before(:each) do
         @user = Factory(:user)
-        wrong_user = Factory(:user, :email => Factory.next(:email))
+        wrong_user = Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email))
         test_sign_in(wrong_user)
         @micropost = Factory(:micropost, :user => @user)
       end

@@ -7,8 +7,22 @@ class MicropostsController < ApplicationController
   end
 
   def create
+    content = params[:micropost][:content]
+    username = nil
+    match_data = Micropost.reply_regex.match(content) || Micropost.whisper_regex.match(content)
+
+    # If need be, filter out the username from the content.
+    if (!match_data.nil?)
+      username = match_data[1]
+      params[:micropost][:content] = match_data[2]
+    end
+
     @micropost = current_user.microposts.build(params[:micropost])
     if @micropost.save
+
+      replied_user = User.find_by_username(username)
+      replied_user.replies << @micropost unless(match_data.nil? || !current_user.following?(replied_user))
+
       redirect_to root_path, :flash => { :success => "Micropost created!" }
     else
       @feed_items = []

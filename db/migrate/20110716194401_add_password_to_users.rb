@@ -1,6 +1,6 @@
 class AddPasswordToUsers < ActiveRecord::Migration
   def self.up
-    add_column :users, :encrypted_password, :string
+    add_column :users, :encrypted_password, :string, :limit => 50
   end
 
   def self.down

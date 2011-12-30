@@ -20,7 +20,7 @@ describe SessionsController do
     describe "invalid signin" do
 
       before(:each) do
-        @attr = { :email => "email@example.com", :password => "invalid" }
+        @attr = { :username => "user.example", :password => "invalid" }
       end
 
       it "should re-render the new page" do
@@ -39,11 +39,11 @@ describe SessionsController do
       end
     end
 
-    describe "with valid email and password" do
+    describe "with valid username and password" do
 
       before(:each) do
         @user = Factory(:user)
-        @attr = { :email => @user.email, :password => @user.password }
+        @attr = { :username => @user.username, :password => @user.password }
       end
 
       it "should sign the user in" do

@@ -7,3 +7,14 @@ class Relationship < ActiveRecord::Base
   validates :follower_id, :presence => true
   validates :followed_id, :presence => true
 end
+# == Schema Information
+#
+# Table name: relationships
+#
+#  id          :integer         not null, primary key
+#  follower_id :integer         not null
+#  followed_id :integer         not null
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+
