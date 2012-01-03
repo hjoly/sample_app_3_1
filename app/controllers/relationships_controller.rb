@@ -10,6 +10,7 @@ class RelationshipsController < ApplicationController
     @user = User.find(params[:relationship][:followed_id])
     current_user.follow!(@user)
     respond_with @user
+    UserMailer.follower_notification(@user).deliver
     # respond_to do |format|
     #   format.html { redirect_to @user }
     #   # In the case of an Ajax request, Rails calls a javaScript Embedded ruby: create.js.erb

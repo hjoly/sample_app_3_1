@@ -27,13 +27,15 @@ describe RelationshipsController do
         # ":relationship => { :followed_id => @followed }" simulates "<%= f.hidden_field :followed_id %>".
         post :create, :relationship => { :followed_id => @followed }
         response.should be_redirect
+        ActionMailer::Base.deliveries.last.to.should == [@followed.email]
       end.should change(Relationship, :count).by(1)
     end
 
-    it "should create a relationship using Ajax" do
+    it "should create a relationship using Ajax and notify it to the followed via an email." do
       lambda do
         xhr :post, :create, :relationship => { :followed_id => @followed }
         response.should be_success
+        ActionMailer::Base.deliveries.last.to.should == [@followed.email]
       end.should change(Relationship, :count).by(1)
     end
   end
