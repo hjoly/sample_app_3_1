@@ -19,3 +19,8 @@
   = f.label :password_confirmation, "Confirmation" 
   %br
   = f.password_field :password_confirmation 
+.field
+  = f.label :notified_on_new_follower 
+  %br    
+  -# c.f. ActionView:Helpers::FormBuilder  
+  = f.check_box :notified_on_new_follower, {}, "true", "false"

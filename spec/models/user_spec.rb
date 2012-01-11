@@ -7,7 +7,8 @@ describe User do
       :email => "user@example.com",
       :username => "user.example",
       :password => "foobar",
-      :password_confirmation => "foobar"
+      :password_confirmation => "foobar",
+      :notified_on_new_follower => true
     }
   end
   
@@ -171,6 +172,26 @@ describe User do
     it "should be convertible to an admin" do
       @user.toggle!(:admin)
       @user.should be_admin
+    end
+  end
+
+  describe "notified_on_new_follower attribute" do
+
+    before(:each) do
+      @user = User.create!(@attr)
+    end
+
+    it "should respond to notified_on_new_follower" do
+      @user.should respond_to(:notified_on_new_follower)
+    end
+
+    it "should be notified_on_new_follower by default" do
+      @user.should be_notified_on_new_follower
+    end
+
+    it "should be configurable to be notified_on_new_follower" do
+      @user.toggle!(:notified_on_new_follower)
+      @user.should_not be_notified_on_new_follower
     end
   end
 
@@ -341,14 +362,15 @@ end
 #
 # Table name: users
 #
-#  id                 :integer         not null, primary key
-#  name               :string(50)      not null
-#  email              :string(70)      not null
-#  created_at         :datetime
-#  updated_at         :datetime
-#  encrypted_password :string(50)
-#  salt               :string(100)
-#  admin              :boolean         default(FALSE), not null
-#  username           :string(15)      not null
+#  id                       :integer         not null, primary key
+#  name                     :string(50)      not null
+#  email                    :string(70)      not null
+#  created_at               :datetime
+#  updated_at               :datetime
+#  encrypted_password       :string(50)
+#  salt                     :string(100)
+#  admin                    :boolean         default(FALSE), not null
+#  username                 :string(15)      not null
+#  notified_on_new_follower :boolean         default(TRUE), not null
 #
 

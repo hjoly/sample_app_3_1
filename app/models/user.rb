@@ -2,7 +2,7 @@ require 'digest'
 
 class User < ActiveRecord::Base
   attr_accessor   :password
-  attr_accessible :name, :email, :username, :password, :password_confirmation
+  attr_accessible :name, :email, :username, :password, :password_confirmation, :notified_on_new_follower
 
   has_many :microposts, :dependent => :destroy
 
@@ -101,14 +101,15 @@ end
 #
 # Table name: users
 #
-#  id                 :integer         not null, primary key
-#  name               :string(50)      not null
-#  email              :string(70)      not null
-#  created_at         :datetime
-#  updated_at         :datetime
-#  encrypted_password :string(50)
-#  salt               :string(100)
-#  admin              :boolean         default(FALSE), not null
-#  username           :string(15)      not null
+#  id                       :integer         not null, primary key
+#  name                     :string(50)      not null
+#  email                    :string(70)      not null
+#  created_at               :datetime
+#  updated_at               :datetime
+#  encrypted_password       :string(50)
+#  salt                     :string(100)
+#  admin                    :boolean         default(FALSE), not null
+#  username                 :string(15)      not null
+#  notified_on_new_follower :boolean         default(TRUE), not null
 #
 

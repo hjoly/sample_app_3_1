@@ -22,6 +22,15 @@ describe RelationshipsController do
       @followed = Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email))
     end
 
+    it "should create a relationship without notifying the followed that don't require it" do
+      @followed.toggle!(:notified_on_new_follower)
+      lambda do
+        post :create, :relationship => { :followed_id => @followed }
+        response.should be_redirect
+        ActionMailer::Base.deliveries.should be_empty
+      end.should change(Relationship, :count).by(1)
+    end
+
     it "should create a relationship" do
       lambda do
         # ":relationship => { :followed_id => @followed }" simulates "<%= f.hidden_field :followed_id %>".

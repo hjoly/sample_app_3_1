@@ -62,7 +62,8 @@ describe UsersController do
       end
 
       it "should show 'delete' link for admins" do
-        admin = Factory(:user, :username => "admin.ex", :email => "admin@example.com", :admin => true)
+        admin = Factory(:user, :username => "admin.ex", :email => "admin@example.com", 
+                        :admin => true, :notified_on_new_follower => true)
         test_sign_in(admin)
 
         get :index
@@ -241,6 +242,11 @@ describe UsersController do
       response.should have_selector("input[name='user[password_confirmation]'][type='password']")
     end
 
+    it "should have a new follower notification field" do
+      get :new
+      response.should have_selector("input[name='user[notified_on_new_follower]'][type='hidden']")
+    end
+
     it "should not be accessible to signed in users" do
       @user = test_sign_in(Factory(:user))
       get :new
@@ -365,7 +371,7 @@ describe UsersController do
 
       before(:each) do
         @attr = { :name => "New Name", :username => "user.example", :email => "user@example.org",
-          :password => "barbaz", :password_confirmation => "barbaz" }
+          :password => "barbaz", :password_confirmation => "barbaz", :notified_on_new_follower => false }
       end
 
       it "should change the user's attributes" do
@@ -375,6 +381,7 @@ describe UsersController do
         @user.name.should  == @attr[:name]
         @user.email.should == @attr[:email]
         @user.username.should == @attr[:username]
+        @user.notified_on_new_follower.should  == @attr[:notified_on_new_follower]
       end
 
       it "should redirect to the user show page" do
@@ -452,7 +459,8 @@ describe UsersController do
     describe "as an admin user" do
 
       before(:each) do
-        @admin = Factory(:user, :username => "admin.example", :email => "admin@example.com", :admin => true)
+        @admin = Factory(:user, :username => "admin.example", :email => "admin@example.com", 
+                         :admin => true, :admin => true, :notified_on_new_follower => true)
         test_sign_in(@admin)
       end
 
